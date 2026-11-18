@@ -1,8 +1,8 @@
-
 import os
 
 from flask import Flask, render_template
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 
 from config import Config
 from database import db
@@ -27,11 +27,20 @@ from routes.behavior import behavior_bp
 from routes.master_dashboard import master_bp
 from routes.auth import auth_bp
 
+
 app = Flask(__name__)
+
+# Load configuration
 app.config.from_object(Config)
 
+# Initialize CSRF Protection
+csrf = CSRFProtect()
+csrf.init_app(app)
+
+# Initialize Database
 db.init_app(app)
 
+# Initialize Login Manager
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.init_app(app)
@@ -71,9 +80,10 @@ with app.app_context():
     db.create_all()
 
 
-# Run application
+# Run Application
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
+
     app.run(
         host="0.0.0.0",
         port=port,

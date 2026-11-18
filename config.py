@@ -8,6 +8,9 @@ class Config:
 
     SECRET_KEY = os.getenv("SECRET_KEY")
 
+    if not SECRET_KEY:
+        raise RuntimeError("SECRET_KEY is missing. Set it in Environment Variables.")
+
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
         "sqlite:///sahivex.db"
@@ -15,9 +18,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    DEBUG = os.getenv(
-        "FLASK_DEBUG", "false"
-    ).lower() == "true"
+    DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
 
     SESSION_COOKIE_HTTPONLY = True
 
