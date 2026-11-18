@@ -1,56 +1,99 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
-    <meta name="google-site-verification" content="YOUR_ACTUAL_GOOGLE_VERIFICATION_CODE">
+    <!-- ================================= -->
+    <!-- SEO CONFIGURATION -->
+    <!-- ================================= -->
 
-    <!-- SEO TITLE -->
     <title>{% block title %}SAHIVEX | AI-Powered Finance Management{% endblock %}</title>
 
-    <!-- SEO DESCRIPTION -->
     <meta name="description"
-          content="SAHIVEX is an AI-powered finance management platform that helps you track expenses, manage budgets, predict future spending and improve financial decisions.">
+          content="{% block meta_description %}SAHIVEX is an AI-powered personal finance management platform. Track expenses, analyze spending, predict future costs and make smarter financial decisions.{% endblock %}">
 
-    <!-- SEO KEYWORDS -->
     <meta name="keywords"
           content="SAHIVEX, AI Finance Management, Personal Finance, Expense Tracker, Budget Planner, AI Financial Assistant">
 
     <meta name="author" content="SAHIVEX">
 
-    <meta name="robots" content="index, follow">
+    <meta name="robots"
+          content="{% block robots %}noindex, nofollow{% endblock %}">
 
-    <link rel="canonical" href="https://sahivex.onrender.com/">
+    <link rel="canonical"
+          href="{% block canonical_url %}{{ request.base_url }}{% endblock %}">
 
-    <!-- OPEN GRAPH -->
-    <meta property="og:title" content="SAHIVEX | Smart AI Finance Management">
 
-    <meta property="og:description"
-          content="Manage your money smarter with SAHIVEX AI-powered financial intelligence.">
+    <!-- ================================= -->
+    <!-- OPEN GRAPH SEO -->
+    <!-- ================================= -->
 
     <meta property="og:type" content="website">
 
-    <meta property="og:url" content="https://sahivex.onrender.com/">
+    <meta property="og:title"
+          content="{% block og_title %}SAHIVEX | Smart AI Finance Management{% endblock %}">
+
+    <meta property="og:description"
+          content="{% block og_description %}Manage your money smarter with SAHIVEX AI-powered financial intelligence.{% endblock %}">
+
+    <meta property="og:url"
+          content="{{ request.base_url }}">
 
     <meta property="og:site_name" content="SAHIVEX">
 
+    <meta property="og:locale" content="en_US">
+
+
+    <!-- ================================= -->
     <!-- TWITTER CARD -->
+    <!-- ================================= -->
+
     <meta name="twitter:card" content="summary">
 
-    <meta name="twitter:title" content="SAHIVEX | AI Finance Platform">
+    <meta name="twitter:title"
+          content="SAHIVEX | AI Finance Platform">
 
     <meta name="twitter:description"
           content="Your Smart AI-Powered Finance Management Platform.">
 
-    <!-- THEME COLOR -->
+
+    <!-- ================================= -->
+    <!-- STRUCTURED DATA -->
+    <!-- ================================= -->
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SAHIVEX",
+        "url": "https://sahivex.onrender.com/",
+        "description": "AI-powered personal finance management platform.",
+        "inLanguage": "en"
+    }
+    </script>
+
+
+    <!-- ================================= -->
+    <!-- THEME -->
+    <!-- ================================= -->
+
     <meta name="theme-color" content="#0b1120">
 
+    <meta name="application-name" content="SAHIVEX">
+
+
+    <!-- ================================= -->
     <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- ================================= -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
 
     <style>
 
@@ -185,13 +228,17 @@
 
 </head>
 
+
 <body>
+
 
 <header>
 
     <div class="nav-container">
 
-        <div class="brand">SAHI<span>VEX</span></div>
+        <div class="brand">
+            SAHI<span>VEX</span>
+        </div>
 
         <nav>
 
@@ -247,6 +294,7 @@
 
 </header>
 
+
 <main>
 
     {% with messages = get_flashed_messages() %}
@@ -263,6 +311,7 @@
 
 </main>
 
+
 <footer>
 
     <h3>SAHIVEX INTELLIGENCE</h3>
@@ -275,7 +324,9 @@
 
 </footer>
 
+
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 
 </body>
 </html>

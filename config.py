@@ -7,6 +7,7 @@ load_dotenv()
 class Config:
 
     SECRET_KEY = os.getenv("SECRET_KEY")
+    SEO_BASE_URL = "https://sahivex.onrender.com"
 
     if not SECRET_KEY:
         raise RuntimeError("SECRET_KEY is missing. Set it in Environment Variables.")

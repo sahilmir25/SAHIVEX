@@ -1,34 +1,68 @@
-
+```html
 {% extends "base.html" %}
+{% block robots %}index, follow{% endblock %}
+
+{% block canonical_url %}https://sahivex.onrender.com/{% endblock %}
+
+{% block meta_description %}SAHIVEX is an AI-powered personal finance platform to track expenses, analyze spending, predict future costs and manage money smarter.{% endblock %}
 
 {% block content %}
 
 <section class="hero">
-    <h2>Welcome to SAHIVEX</h2>
 
-    <p>Your Smart AI-Powered Finance Management Platform.</p>
+    <h1>Welcome to SAHIVEX</h1>
+
+    <p>
+        Your Smart AI-Powered Finance Management Platform.
+        Track expenses, analyze spending patterns and make
+        smarter financial decisions with artificial intelligence.
+    </p>
 
     <a href="/dashboard" class="btn">
         Explore Dashboard
     </a>
+
 </section>
+
 
 <section class="features">
 
     <div class="feature-card">
-        <h3>💰 Smart Finance</h3>
-        <p>Manage your income and expenses.</p>
+        <h3>💰 Smart Finance Management</h3>
+        <p>
+            Manage your income, expenses and financial transactions
+            efficiently with SAHIVEX.
+        </p>
     </div>
 
     <div class="feature-card">
-        <h3>📊 Analytics</h3>
-        <p>Understand your financial activities.</p>
+        <h3>📊 Financial Analytics</h3>
+        <p>
+            Understand your spending habits through
+            intelligent financial analytics and reports.
+        </p>
     </div>
 
     <div class="feature-card">
-        <h3>🤖 AI Prediction</h3>
-        <p>Predict your future expenses.</p>
+        <h3>🤖 AI Expense Prediction</h3>
+        <p>
+            Analyze previous expenses and predict
+            potential future spending with AI-powered insights.
+        </p>
     </div>
+
+</section>
+
+
+<section class="about-sahivex">
+
+    <h2>Take Control of Your Financial Future</h2>
+
+    <p>
+        SAHIVEX is an AI-powered personal finance management
+        platform designed to help users track expenses,
+        understand financial behavior and improve money management.
+    </p>
 
 </section>
 
