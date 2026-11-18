@@ -1,15 +1,59 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}SAHIVEX | Intelligence{% endblock %}</title>
+    <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
+    <meta name="google-site-verification" content="YOUR_ACTUAL_GOOGLE_VERIFICATION_CODE">
 
+    <!-- SEO TITLE -->
+    <title>{% block title %}SAHIVEX | AI-Powered Finance Management{% endblock %}</title>
+
+    <!-- SEO DESCRIPTION -->
+    <meta name="description"
+          content="SAHIVEX is an AI-powered finance management platform that helps you track expenses, manage budgets, predict future spending and improve financial decisions.">
+
+    <!-- SEO KEYWORDS -->
+    <meta name="keywords"
+          content="SAHIVEX, AI Finance Management, Personal Finance, Expense Tracker, Budget Planner, AI Financial Assistant">
+
+    <meta name="author" content="SAHIVEX">
+
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://sahivex.onrender.com/">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="SAHIVEX | Smart AI Finance Management">
+
+    <meta property="og:description"
+          content="Manage your money smarter with SAHIVEX AI-powered financial intelligence.">
+
+    <meta property="og:type" content="website">
+
+    <meta property="og:url" content="https://sahivex.onrender.com/">
+
+    <meta property="og:site_name" content="SAHIVEX">
+
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary">
+
+    <meta name="twitter:title" content="SAHIVEX | AI Finance Platform">
+
+    <meta name="twitter:description"
+          content="Your Smart AI-Powered Finance Management Platform.">
+
+    <!-- THEME COLOR -->
+    <meta name="theme-color" content="#0b1120">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -108,6 +152,7 @@
         }
 
         @media(max-width: 900px) {
+
             .nav-container {
                 flex-direction: column;
                 align-items: flex-start;
@@ -126,6 +171,7 @@
         }
 
         @media(max-width: 600px) {
+
             main {
                 padding: 12px;
             }
@@ -134,12 +180,15 @@
                 font-size: 23px;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
 <header>
+
     <div class="nav-container">
 
         <div class="brand">SAHI<span>VEX</span></div>
@@ -195,6 +244,7 @@
         </nav>
 
     </div>
+
 </header>
 
 <main>
