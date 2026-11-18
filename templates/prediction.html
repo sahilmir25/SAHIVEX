@@ -1,0 +1,299 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.prediction-page {
+    padding: 25px;
+    color: white;
+}
+
+.prediction-header {
+    margin-bottom: 25px;
+}
+
+.prediction-header h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.prediction-header p {
+    color: #aab5d1;
+}
+
+.prediction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+    margin: 25px 0;
+}
+
+.prediction-card {
+    background: #151d35;
+    border: 1px solid #293653;
+    border-radius: 15px;
+    padding: 22px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+}
+
+.prediction-card h4 {
+    color: #aab5d1;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.prediction-card h2 {
+    font-size: 27px;
+    margin: 0;
+    color: #ffffff;
+}
+
+.prediction-card p {
+    color: #aab5d1;
+    margin-top: 10px;
+}
+
+.prediction-section {
+    background: #151d35;
+    border: 1px solid #293653;
+    border-radius: 15px;
+    padding: 22px;
+    margin-top: 22px;
+}
+
+.prediction-section h3 {
+    margin-bottom: 15px;
+}
+
+.prediction-status {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.prediction-button {
+    display: inline-block;
+    padding: 12px 22px;
+    background: #536dfe;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    margin-top: 20px;
+}
+
+.prediction-button:hover {
+    background: #4055d6;
+}
+
+.prediction-note {
+    color: #aab5d1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+@media(max-width: 600px) {
+    .prediction-page {
+        padding: 12px;
+    }
+
+    .prediction-header h2 {
+        font-size: 23px;
+    }
+}
+</style>
+
+
+<section class="prediction-page">
+
+    <div class="prediction-header">
+
+        <h2>🤖 SAHIVEX AI Expense Analysis</h2>
+
+        <p>
+            Smart financial forecasting and monthly spending analysis
+        </p>
+
+    </div>
+
+
+    {% if result and result.prediction is not none %}
+
+    <!-- Prediction Cards -->
+
+    <div class="prediction-grid">
+
+        <div class="prediction-card">
+            <h4>🔮 Predicted Next Month Expense</h4>
+            <h2>₹{{ "%.2f"|format(result.prediction) }}</h2>
+            <p>Estimated future expense</p>
+        </div>
+
+
+        <div class="prediction-card">
+            <h4>📊 Average Monthly Expense</h4>
+            <h2>₹{{ "%.2f"|format(result.average) }}</h2>
+            <p>Average across analyzed months</p>
+        </div>
+
+
+        <div class="prediction-card">
+            <h4>💳 Last Recorded Month Expense</h4>
+            <h2>₹{{ "%.2f"|format(result.last_month) }}</h2>
+            <p>Most recent available month</p>
+        </div>
+
+
+        <div class="prediction-card">
+            <h4>📈 Expected Difference</h4>
+            <h2>₹{{ "%.2f"|format(result.difference) }}</h2>
+            <p>{{ result.prediction_status }}</p>
+        </div>
+
+    </div>
+
+
+    <!-- Expense Trend -->
+
+    <div class="prediction-section">
+
+        <h3>📈 Spending Trend</h3>
+
+        <div class="prediction-status">
+            {{ result.trend }}
+        </div>
+
+        {% if result.trend == "Increasing" %}
+
+            <p>
+                Your recorded expenses increased compared with
+                the previous analyzed month. Review your spending.
+            </p>
+
+        {% elif result.trend == "Decreasing" %}
+
+            <p>
+                Your recorded expenses decreased.
+                Keep monitoring your spending habits.
+            </p>
+
+        {% elif result.trend == "Stable" %}
+
+            <p>
+                Your recorded expenses remained stable.
+            </p>
+
+        {% else %}
+
+            <p>
+                More valid monthly data is required to identify a trend.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Prediction Chart -->
+
+    <div class="prediction-section">
+
+        <h3>📊 Monthly Expense Forecast Chart</h3>
+
+        {{ prediction_chart | safe }}
+
+    </div>
+
+
+    <!-- Model Information -->
+
+    <div class="prediction-section">
+
+        <h3>🧠 Machine Learning Information</h3>
+
+        <p>
+            <strong>Model:</strong> Linear Regression
+        </p>
+
+        <p>
+            <strong>Months Analyzed:</strong>
+            {{ result.months_analyzed }}
+        </p>
+
+        <p>
+            <strong>Data Quality:</strong>
+            {{ result.data_quality }}
+        </p>
+
+        <p>
+            <strong>Prediction:</strong>
+            {{ result.message }}
+        </p>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- Insufficient Data -->
+
+    <div class="prediction-section">
+
+        <h3>⚠️ Not Enough Data</h3>
+
+        <p>
+            {{ result.message if result else
+            "Add expenses across at least two different months to generate a prediction." }}
+        </p>
+
+        <p>
+            Current available months: {{ months_count }}
+        </p>
+
+    </div>
+
+
+    {% endif %}
+
+
+    <!-- Monthly History -->
+
+    <div class="prediction-section">
+
+        <h3>📅 Monthly Expense History</h3>
+
+        {% if months %}
+
+            {% for month in months %}
+
+                <p>
+                    {{ month }} —
+                    ₹{{ "%.2f"|format(expenses[loop.index0]) }}
+                </p>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No expense history available.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <p class="prediction-note">
+        Disclaimer: Predictions are estimates based on historical
+        expense data. They are not guaranteed future expenses or
+        professional financial advice.
+    </p>
+
+
+    <a href="/dashboard" class="prediction-button">
+        ← Back to Dashboard
+    </a>
+
+</section>
+
+{% endblock %}

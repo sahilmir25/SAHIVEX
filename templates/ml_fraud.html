@@ -1,0 +1,100 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>🤖 SAHIVEX ML Fraud Detection</h1>
+    <p>Machine Learning Based Transaction Anomaly Detection</p>
+
+    {% if report.success %}
+
+    <div class="row" style="display:flex; gap:15px; flex-wrap:wrap; margin:25px 0;">
+
+        <div class="card">
+            <h3>Transactions Analyzed</h3>
+            <h2>{{ report.transaction_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Suspicious Transactions</h3>
+            <h2>{{ report.suspicious_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Detection Model</h3>
+            <h2>Isolation Forest</h2>
+        </div>
+
+    </div>
+
+    <div class="card" style="padding:20px; margin-bottom:20px;">
+        <h3>ML Analysis Report</h3>
+        <p>{{ report.message }}</p>
+    </div>
+
+    <h2>🚨 ML Anomaly Alerts</h2>
+
+    {% if report.alerts %}
+
+        {% for alert in report.alerts %}
+
+        <div class="card" style="padding:20px; margin:15px 0; border-left:4px solid #e74c3c;">
+
+            <h3>{{ alert.title }}</h3>
+
+            <p><strong>Amount:</strong> ₹{{ alert.amount }}</p>
+            <p><strong>Category:</strong> {{ alert.category }}</p>
+            <p><strong>Date:</strong> {{ alert.date }}</p>
+
+            <p style="color:#e74c3c;">
+                {{ alert.message }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card" style="padding:20px;">
+            <h3>✅ No Unusual Patterns Detected</h3>
+            <p>{{ report.message }}</p>
+        </div>
+
+    {% endif %}
+
+    {% else %}
+
+    <div class="card" style="padding:20px;">
+
+        <h3>📊 More Transaction Data Required</h3>
+
+        <p>{{ report.message }}</p>
+
+        <p>
+            Current expense transactions:
+            <strong>{{ report.transaction_count }}</strong>
+        </p>
+
+        <p>
+            Minimum required transactions:
+            <strong>10</strong>
+        </p>
+
+    </div>
+
+    {% endif %}
+
+    <div class="card" style="padding:15px; margin-top:25px;">
+        <p>
+            <strong>Important:</strong>
+            Isolation Forest identifies unusual transaction patterns.
+            An alert does not prove fraud. Please verify transactions manually.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

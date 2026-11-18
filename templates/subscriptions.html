@@ -1,0 +1,214 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.subscription-container {
+    padding: 25px;
+    color: white;
+}
+
+.subscription-header {
+    margin-bottom: 25px;
+}
+
+.subscription-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.subscription-header p {
+    color: #94a3b8;
+}
+
+.subscription-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.subscription-card {
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.subscription-card h3 {
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+.subscription-card h2 {
+    font-size: 27px;
+    color: #38bdf8;
+    margin-top: 12px;
+}
+
+.subscription-section {
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.subscription-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.subscription-table th,
+.subscription-table td {
+    padding: 14px;
+    border-bottom: 1px solid #334155;
+    text-align: left;
+}
+
+.subscription-table th {
+    color: #38bdf8;
+}
+
+.subscription-table td {
+    color: #e2e8f0;
+}
+
+.subscription-badge {
+    background: #263b59;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.subscription-empty {
+    color: #94a3b8;
+    padding: 15px 0;
+}
+</style>
+
+<div class="subscription-container">
+
+    <div class="subscription-header">
+        <h1>💳 SAHIVEX Smart Subscription Detector</h1>
+        <p>Discover possible subscriptions and monitor repeated payments.</p>
+    </div>
+
+    {% if report.success %}
+
+    <div class="subscription-grid">
+
+        <div class="subscription-card">
+            <h3>Possible Subscriptions</h3>
+            <h2>{{ report.subscriptions|length }}</h2>
+        </div>
+
+        <div class="subscription-card">
+            <h3>Estimated Monthly Cost</h3>
+            <h2>₹{{ "%.2f"|format(report.total_monthly_cost) }}</h2>
+        </div>
+
+    </div>
+
+    <div class="subscription-section">
+
+        <h2>📊 Subscription Analysis</h2>
+
+        {% if report.subscriptions %}
+
+        <table class="subscription-table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Average Payment</th>
+                    <th>Occurrences</th>
+                    <th>Frequency</th>
+                    <th>Confidence</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in report.subscriptions %}
+
+                <tr>
+                    <td>{{ item.title }}</td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(item.average_amount) }}
+                    </td>
+
+                    <td>{{ item.occurrences }}</td>
+
+                    <td>
+                        <span class="subscription-badge">
+                            {{ item.frequency }}
+                        </span>
+                    </td>
+
+                    <td>{{ item.confidence }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <p class="subscription-empty">
+            {{ report.message }}
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="subscription-section">
+
+        <h2>💡 Smart Insights</h2>
+
+        {% if report.subscriptions %}
+
+            <p>
+                SAHIVEX identified
+                {{ report.subscriptions|length }}
+                possible subscription or repeated payment pattern(s).
+            </p>
+
+            <p>
+                Estimated monthly subscription cost:
+                ₹{{ "%.2f"|format(report.total_monthly_cost) }}
+            </p>
+
+        {% else %}
+
+            <p class="subscription-empty">
+                Add more transaction records to improve subscription detection.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="subscription-section">
+        <h2>Expense Data Required</h2>
+        <p>{{ report.message }}</p>
+    </div>
+
+    {% endif %}
+
+    <p style="color:#94a3b8; font-size:13px;">
+        Note: These are possible subscription matches, not confirmed active
+        subscriptions. Review your payment history before taking action.
+    </p>
+
+</div>
+
+{% endblock %}

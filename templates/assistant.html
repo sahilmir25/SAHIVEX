@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="dashboard">
+
+    <h2>🤖 SAHIVEX Financial Assistant</h2>
+
+    <p>Ask anything about your financial activities.</p>
+
+    <form action="{{ url_for('assistant.assistant') }}" method="POST">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <input
+            type="text"
+            name="question"
+            placeholder="Ask SAHIVEX..."
+            value="{{ question or '' }}"
+            required
+        >
+
+        <button type="submit">Ask SAHIVEX</button>
+
+    </form>
+
+    {% if answer %}
+
+        <div class="card balance">
+
+            <h3>🤖 SAHIVEX Answer</h3>
+
+            <p>{{ answer }}</p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

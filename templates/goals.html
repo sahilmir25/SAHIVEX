@@ -1,0 +1,301 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.goals-page {
+    padding: 25px;
+    color: white;
+}
+
+.goals-header {
+    margin-bottom: 25px;
+}
+
+.goals-header p {
+    color: #aab5d1;
+}
+
+.goal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.goal-card {
+    background: #151d35;
+    padding: 22px;
+    border-radius: 15px;
+    border: 1px solid #293653;
+    margin-bottom: 20px;
+}
+
+.goal-card h3 {
+    margin-top: 0;
+}
+
+.goal-card p {
+    color: #aab5d1;
+}
+
+.goal-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin: 8px 0 15px;
+    border: 1px solid #354363;
+    border-radius: 8px;
+    background: #0d152b;
+    color: white;
+}
+
+.goal-form label {
+    color: #cbd5e1;
+}
+
+.goal-form button,
+.goal-update button {
+    padding: 12px 18px;
+    background: #536dfe;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.progress-track {
+    height: 12px;
+    background: #293653;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #36c99b;
+    border-radius: 20px;
+}
+
+.flash-message {
+    background: #263653;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.goal-update input {
+    padding: 10px;
+    background: #0d152b;
+    color: white;
+    border: 1px solid #354363;
+    border-radius: 8px;
+    width: 120px;
+    margin-right: 8px;
+}
+
+@media(max-width: 600px) {
+    .goals-page {
+        padding: 12px;
+    }
+}
+</style>
+
+<section class="goals-page">
+
+    <div class="goals-header">
+        <h2>🎯 SAHIVEX Smart Financial Goals</h2>
+        <p>Plan your savings. Track your progress. Achieve your dreams.</p>
+    </div>
+
+    <!-- Flash Messages -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <!-- Create Goal -->
+
+    <div class="goal-grid">
+
+        <div class="goal-card">
+
+            <h3>➕ Create New Goal</h3>
+
+            <form class="goal-form" method="POST"
+                  action="{{ url_for('goals.goals') }}">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label>Goal Name</label>
+                <input type="text" name="title"
+                       placeholder="Example: Buy a Laptop"
+                       maxlength="150" required>
+
+                <label>Target Amount (₹)</label>
+                <input type="number" name="target_amount"
+                       min="1" step="0.01"
+                       placeholder="50000" required>
+
+                <label>Current Savings (₹)</label>
+                <input type="number" name="current_amount"
+                       min="0" step="0.01"
+                       value="0" required>
+
+                <label>Monthly Saving (₹)</label>
+                <input type="number" name="monthly_saving"
+                       min="0" step="0.01"
+                       placeholder="5000" required>
+
+                <label>Target Deadline (Optional)</label>
+                <input type="date" name="deadline">
+
+                <button type="submit">
+                    Create Financial Goal
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Goal Summary -->
+
+        <div class="goal-card">
+
+            <h3>📊 Your Goal Summary</h3>
+
+            <h2>{{ goals|length }}</h2>
+            <p>Total Financial Goals</p>
+
+            <p>Track your progress and update your savings regularly.</p>
+
+        </div>
+
+    </div>
+
+    <!-- Existing Goals -->
+
+    <h2 style="margin-top:30px;">🚀 My Financial Goals</h2>
+
+    {% if goals %}
+
+        {% for goal in goals %}
+
+            {% set plan = goal_plans[goal.id] %}
+
+            <div class="goal-card">
+
+                <h3>{{ goal.title }}</h3>
+
+                <p>
+                    Target:
+                    ₹{{ "%.2f"|format(goal.target_amount) }}
+                </p>
+
+                <p>
+                    Current Savings:
+                    ₹{{ "%.2f"|format(goal.current_amount) }}
+                </p>
+
+                <p>
+                    Remaining:
+                    ₹{{ "%.2f"|format(goal.remaining_amount) }}
+                </p>
+
+                <p>Progress: {{ goal.progress }}%</p>
+
+                <div class="progress-track">
+                    <div class="progress-fill"
+                         style="width: {{ goal.progress }}%;">
+                    </div>
+                </div>
+
+                {% if plan.months_required is not none %}
+
+                    {% if plan.completed %}
+
+                        <h3>🎉 Goal Completed!</h3>
+
+                    {% else %}
+
+                        <p>
+                            Monthly Saving:
+                            ₹{{ "%.2f"|format(goal.monthly_saving) }}
+                        </p>
+
+                        <p>
+                            Estimated Time:
+                            {{ plan.months_required }} months
+                        </p>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <p>
+                        Enter a monthly saving amount
+                        to calculate the estimated time.
+                    </p>
+
+                {% endif %}
+
+                {% if goal.deadline %}
+
+                    <p>
+                        Deadline: {{ goal.deadline.strftime("%d-%m-%Y") }}
+                    </p>
+
+                {% endif %}
+
+                <!-- Update Savings -->
+
+                <form class="goal-update"
+                      method="POST"
+                      action="{{ url_for('goals.update_goal', goal_id=goal.id) }}">
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <label>Update Current Savings (₹)</label>
+
+                    <br><br>
+
+                    <input type="number"
+                           name="current_amount"
+                           min="0"
+                           max="{{ goal.target_amount }}"
+                           step="0.01"
+                           value="{{ goal.current_amount }}"
+                           required>
+
+                    <button type="submit">
+                        Update Progress
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="goal-card">
+            <h3>No Financial Goals Yet</h3>
+            <p>Create your first savings goal above.</p>
+        </div>
+
+    {% endif %}
+
+    <a href="{{ url_for('dashboard.dashboard') }}"
+       style="color:#8da2ff; display:inline-block; margin-top:20px;">
+        ← Back to Dashboard
+    </a>
+
+</section>
+
+{% endblock %}

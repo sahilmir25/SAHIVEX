@@ -1,0 +1,182 @@
+
+{% extends "base.html" %}
+
+{% block title %}SAHIVEX - Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="dashboard">
+
+    <div class="health-header">
+        <div>
+            <p class="eyebrow">SAHIVEX INTELLIGENCE</p>
+            <h2>Financial Dashboard</h2>
+            <p>Your intelligent financial overview.</p>
+        </div>
+
+        <a href="/dashboard" class="refresh-btn">
+            ↻ Refresh Dashboard
+        </a>
+    </div>
+
+    <!-- Financial Cards -->
+    <div class="dashboard-cards">
+
+        <div class="card income">
+            <p>Total Income</p>
+            <h2>₹{{ "%.2f"|format(income) }}</h2>
+            <span>Recorded Income</span>
+        </div>
+
+        <div class="card expense">
+            <p>Total Expenses</p>
+            <h2>₹{{ "%.2f"|format(expense) }}</h2>
+            <span>Recorded Expenses</span>
+        </div>
+
+        <div class="card balance">
+            <p>Available Balance</p>
+            <h2>₹{{ "%.2f"|format(balance) }}</h2>
+            <span>Income minus expenses</span>
+        </div>
+
+    </div>
+
+    <!-- Health Indicator -->
+    <div class="card balance" style="margin-top: 25px;">
+
+        <h2>💚 Financial Health Indicator</h2>
+
+        <h1 style="font-size: 48px; margin: 20px 0;">
+            {{ health_score }}%
+        </h1>
+
+        <h3>{{ health_status }}</h3>
+
+        <div style="background:#334155;height:14px;
+                    border-radius:20px;overflow:hidden;
+                    margin-top:20px;">
+
+            <div style="width:{{ [[health_score, 0]|max, 100]|min }}%;
+                        height:100%;background:#22c55e;">
+            </div>
+
+        </div>
+
+        <p style="margin-top:15px;color:#94a3b8;">
+            This is a savings-based indicator, not a credit score.
+        </p>
+
+    </div>
+
+    <!-- Highest Spending Category -->
+    <div class="card" style="margin-top:25px;">
+
+        <h3>🏆 Highest Spending Category</h3>
+
+        <h2 style="margin-top:15px;">
+            {{ highest_category|title }}
+        </h2>
+
+        <h3 style="color:#38bdf8;">
+            ₹{{ "%.2f"|format(highest_amount) }}
+        </h3>
+
+    </div>
+
+    <!-- Smart Budget -->
+    <div class="chart-section" style="margin-top:35px;">
+
+        <p class="eyebrow">SMART FINANCE</p>
+
+        <h2>🤖 Smart Budget Recommendations</h2>
+
+        <p>Category-wise budget planning</p>
+
+        {% if budget_recommendations %}
+
+            <div class="dashboard-cards">
+
+                {% for item in budget_recommendations %}
+
+                    <div class="card">
+
+                        <h3>{{ item.category|title }}</h3>
+
+                        <p>Monthly Average</p>
+
+                        <h2>
+                            ₹{{ item.monthly_average }}
+                        </h2>
+
+                        <p style="margin-top:12px;">
+                            Suggested Budget
+                        </p>
+
+                        <h3>
+                            ₹{{ item.suggested_budget }}
+                        </h3>
+
+                        <p style="color:#22c55e;">
+                            Possible Savings:
+                            ₹{{ item.possible_savings }}
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p>No expense data available yet.</p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Main Charts -->
+    <div class="chart-section">
+
+        <p class="eyebrow">FINANCIAL ANALYTICS</p>
+
+        <h2>Income vs Expense</h2>
+
+        {{ bar_chart | safe }}
+
+    </div>
+
+    <div class="chart-section">
+
+        <h2>Expense by Category</h2>
+
+        {{ pie_chart | safe }}
+
+    </div>
+
+    <div class="chart-section">
+
+        <h2>Monthly Income vs Expense</h2>
+
+        {{ monthly_chart | safe }}
+
+    </div>
+
+    <div class="chart-section">
+
+        <h2>Monthly Savings Trend</h2>
+
+        {{ savings_chart | safe }}
+
+    </div>
+
+    <p class="health-disclaimer">
+        SAHIVEX provides informational financial analysis.
+        Recorded balance may differ from actual bank balance.
+    </p>
+
+</section>
+
+{% endblock %}
+

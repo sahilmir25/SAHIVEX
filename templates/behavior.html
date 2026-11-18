@@ -1,0 +1,111 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>🧠 SAHIVEX Financial Behavior Analyzer</h1>
+    <p>Understand your spending habits with smart financial analytics.</p>
+
+    {% if report.success %}
+
+    <div class="row" style="display:flex; gap:15px; flex-wrap:wrap; margin:25px 0;">
+
+        <div class="card">
+            <h3>Total Expenses</h3>
+            <h2>₹{{ report.total_expense }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Transactions Analyzed</h3>
+            <h2>{{ report.transaction_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Average Transaction</h3>
+            <h2>₹{{ report.average_transaction }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Highest Spending</h3>
+            <h2>{{ report.highest_category }}</h2>
+        </div>
+
+    </div>
+
+    <div class="card" style="padding:20px; margin-bottom:20px;">
+
+        <h2>📊 Category-wise Spending</h2>
+
+        {% for item in report.category_data %}
+
+        <div style="margin:18px 0;">
+
+            <div style="display:flex; justify-content:space-between;">
+                <strong>{{ item.category }}</strong>
+                <strong>₹{{ item.amount }}</strong>
+            </div>
+
+            <div style="background:#ddd; height:10px; border-radius:10px; overflow:hidden;">
+
+                <div style="
+                    background:#3498db;
+                    height:10px;
+                    width:{{ (item.amount / report.total_expense * 100) if report.total_expense else 0 }}%;
+                    border-radius:10px;
+                "></div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="row" style="display:flex; gap:15px; flex-wrap:wrap;">
+
+        <div class="card" style="padding:20px; flex:1;">
+            <h3>📅 Weekday Expenses</h3>
+            <h2>₹{{ report.weekday_expense }}</h2>
+        </div>
+
+        <div class="card" style="padding:20px; flex:1;">
+            <h3>🎉 Weekend Expenses</h3>
+            <h2>₹{{ report.weekend_expense }}</h2>
+        </div>
+
+    </div>
+
+    <div class="card" style="padding:20px; margin-top:20px;">
+
+        <h2>💡 Financial Behavior Insights</h2>
+
+        {% for insight in report.insights %}
+            <p>🔹 {{ insight }}</p>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="card" style="padding:20px;">
+        <h2>📊 No Expense Data Available</h2>
+        <p>{{ report.message }}</p>
+    </div>
+
+    {% endif %}
+
+    <div class="card" style="padding:15px; margin-top:20px;">
+        <p>
+            <strong>Note:</strong>
+            These insights are based on recorded expense transactions.
+            They describe spending patterns and do not prove that any
+            spending is unnecessary.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

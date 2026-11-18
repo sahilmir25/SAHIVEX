@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>🛡️ SAHIVEX Fraud Detection</h1>
+    <p>Smart Transaction Risk Monitoring System</p>
+
+    {% if report.success %}
+
+    <div class="row" style="display:flex; gap:15px; flex-wrap:wrap; margin:25px 0;">
+
+        <div class="card">
+            <h3>Transactions Analyzed</h3>
+            <h2>{{ report.transaction_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Suspicious Transactions</h3>
+            <h2>{{ report.suspicious_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Overall Risk Score</h3>
+            <h2>{{ report.risk_score }}%</h2>
+        </div>
+
+        <div class="card">
+            <h3>Risk Level</h3>
+            <h2>{{ report.risk_level }}</h2>
+        </div>
+
+    </div>
+
+    <div class="card" style="padding:20px; margin-bottom:20px;">
+        <h3>Detection Report</h3>
+        <p>{{ report.message }}</p>
+    </div>
+
+    <h2>🚨 Suspicious Transaction Alerts</h2>
+
+    {% if report.alerts %}
+
+        {% for alert in report.alerts %}
+
+        <div class="card" style="padding:20px; margin:15px 0; border-left:4px solid #e74c3c;">
+
+            <h3>{{ alert.title }}</h3>
+
+            <p><strong>Amount:</strong> ₹{{ alert.amount }}</p>
+            <p><strong>Category:</strong> {{ alert.category }}</p>
+            <p><strong>Date:</strong> {{ alert.date }}</p>
+            <p><strong>Transaction Risk:</strong> {{ alert.risk_score }}%</p>
+
+            <h4>Detection Reasons:</h4>
+
+            <ul>
+                {% for reason in alert.reasons %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card" style="padding:20px;">
+            <h3>✅ No Suspicious Patterns Detected</h3>
+            <p>{{ report.message }}</p>
+        </div>
+
+    {% endif %}
+
+    {% else %}
+
+    <div class="card" style="padding:20px;">
+        <h3>Insufficient Data</h3>
+        <p>{{ report.message }}</p>
+    </div>
+
+    {% endif %}
+
+    <p style="margin-top:25px; color:gray;">
+        Note: Alerts are based on simple statistical rules.
+        They are not proof of fraud. Please verify transactions manually.
+    </p>
+
+</div>
+{% endblock %}

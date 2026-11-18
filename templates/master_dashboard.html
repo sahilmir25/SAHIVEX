@@ -1,0 +1,183 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>🚀 SAHIVEX Master Dashboard</h1>
+    <p>Your Central Financial Intelligence Center</p>
+
+    <!-- Financial Overview -->
+    <h2>💰 Financial Overview</h2>
+
+    <div style="display:flex; flex-wrap:wrap; gap:15px; margin:20px 0;">
+
+        <div class="card" style="padding:20px; flex:1;">
+            <h3>Total Income</h3>
+            <h2>₹{{ total_income }}</h2>
+        </div>
+
+        <div class="card" style="padding:20px; flex:1;">
+            <h3>Total Expenses</h3>
+            <h2>₹{{ total_expense }}</h2>
+        </div>
+
+        <div class="card" style="padding:20px; flex:1;">
+            <h3>Available Balance</h3>
+            <h2>₹{{ balance }}</h2>
+        </div>
+
+    </div>
+
+    <!-- Fraud Detection -->
+    <h2>🛡️ Fraud Detection</h2>
+
+    <div class="card" style="padding:20px; margin:15px 0;">
+        <h3>Rule-Based Detection</h3>
+
+        <p>Transactions Analyzed:
+            <strong>{{ fraud_report.transaction_count }}</strong>
+        </p>
+
+        <p>Suspicious Transactions:
+            <strong>{{ fraud_report.suspicious_count }}</strong>
+        </p>
+
+        <p>Risk Level:
+            <strong>{{ fraud_report.risk_level }}</strong>
+        </p>
+
+        <p>{{ fraud_report.message }}</p>
+
+        <a href="{{ url_for('fraud.fraud_detection') }}">
+            Open Fraud Dashboard →
+        </a>
+    </div>
+
+    <!-- ML Detection -->
+    <h2>🤖 Machine Learning Analysis</h2>
+
+    <div class="card" style="padding:20px; margin:15px 0;">
+
+        <h3>Isolation Forest</h3>
+
+        <p>Transactions Analyzed:
+            <strong>{{ ml_report.transaction_count }}</strong>
+        </p>
+
+        <p>Unusual Transactions:
+            <strong>{{ ml_report.suspicious_count }}</strong>
+        </p>
+
+        <p>{{ ml_report.message }}</p>
+
+        <a href="{{ url_for('ml_fraud.ml_fraud_detection') }}">
+            Open ML Dashboard →
+        </a>
+
+    </div>
+
+    <!-- Financial Behavior -->
+    <h2>🧠 Financial Behavior</h2>
+
+    <div class="card" style="padding:20px; margin:15px 0;">
+
+        {% if behavior_report.success %}
+
+            <p>Total Transactions:
+                <strong>{{ behavior_report.transaction_count }}</strong>
+            </p>
+
+            <p>Average Transaction:
+                <strong>₹{{ behavior_report.average_transaction }}</strong>
+            </p>
+
+            <p>Highest Spending Category:
+                <strong>{{ behavior_report.highest_category }}</strong>
+            </p>
+
+            <h3>Insights</h3>
+
+            {% for insight in behavior_report.insights %}
+                <p>🔹 {{ insight }}</p>
+            {% endfor %}
+
+        {% else %}
+
+            <p>{{ behavior_report.message }}</p>
+
+        {% endif %}
+
+        <a href="{{ url_for('behavior.financial_behavior') }}">
+            Open Behavior Analyzer →
+        </a>
+
+    </div>
+
+    <!-- Financial Goals -->
+    <h2>🎯 Financial Goals</h2>
+
+    {% if goals %}
+
+        {% for goal in goals %}
+
+            <div class="card" style="padding:20px; margin:15px 0;">
+
+                <h3>{{ goal.title }}</h3>
+
+                <p>Target:
+                    ₹{{ goal.target_amount }}
+                </p>
+
+                <p>Current Savings:
+                    ₹{{ goal.current_amount }}
+                </p>
+
+                <p>Remaining:
+                    ₹{{ goal.remaining_amount }}
+                </p>
+
+                <p>Progress:
+                    {{ goal.progress }}%
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card" style="padding:20px;">
+            <p>No financial goals created yet.</p>
+        </div>
+
+    {% endif %}
+
+    <h2>📊 More SAHIVEX Features</h2>
+
+    <div class="card" style="padding:20px;">
+
+        <p><a href="{{ url_for('dashboard.dashboard') }}">📊 Main Dashboard</a></p>
+
+        <p><a href="{{ url_for('prediction.prediction') }}">📈 Expense Prediction</a></p>
+
+        <p><a href="{{ url_for('health.health_analysis') }}">💚 Financial Health</a></p>
+
+        <p><a href="{{ url_for('saving.smart_saving') }}">🧠 Smart Saving</a></p>
+
+        <p><a href="{{ url_for('assistant.assistant') }}">🤖 AI Financial Advisor</a></p>
+
+    </div>
+
+    <div class="card" style="padding:15px; margin-top:25px;">
+        <p>
+            <strong>Note:</strong>
+            This dashboard combines existing financial calculations
+            and rule-based analysis. ML anomaly alerts are not proof of fraud.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

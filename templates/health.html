@@ -1,0 +1,170 @@
+
+{% extends "base.html" %}
+
+{% block title %}SAHIVEX - Financial Health{% endblock %}
+
+{% block content %}
+
+<section class="health-page">
+
+    <div class="health-header">
+        <div>
+            <p class="eyebrow">SAHIVEX INTELLIGENCE</p>
+            <h2>Financial Health</h2>
+            <p>Your personal financial overview and insights.</p>
+        </div>
+
+        <a href="/health-analysis" class="refresh-btn">
+            ↻ Refresh Report
+        </a>
+    </div>
+
+    <div class="health-card-grid">
+
+        <div class="health-card">
+            <p>Total Income</p>
+            <h2>₹{{ "%.2f"|format(total_income) }}</h2>
+            <span>Recorded Income</span>
+        </div>
+
+        <div class="health-card">
+            <p>Total Expenses</p>
+            <h2>₹{{ "%.2f"|format(total_expense) }}</h2>
+            <span>Recorded Expenses</span>
+        </div>
+
+        <div class="health-card">
+            <p>Recorded Balance</p>
+            <h2>₹{{ "%.2f"|format(balance) }}</h2>
+            <span>Income minus expenses</span>
+        </div>
+
+        <div class="health-card">
+            <p>Savings Rate</p>
+            <h2>{{ savings_rate }}%</h2>
+            <span>Based on recorded transactions</span>
+        </div>
+
+    </div>
+
+    <div class="health-main-grid">
+
+        <div class="health-panel">
+
+            <h3>Savings Indicator</h3>
+
+            <div class="health-score">
+                <div class="score-circle">
+                    <span>{{ savings_rate }}%</span>
+                </div>
+            </div>
+
+            <h3 class="healthy-text">
+                {{ health_status }}
+            </h3>
+
+            <p class="panel-description">
+                This indicator is calculated from your recorded income
+                and expenses. It is not a credit score.
+            </p>
+
+        </div>
+
+        <div class="health-panel">
+
+            <h3>Expense Overview</h3>
+
+            <div class="expense-progress">
+
+                <div class="progress-label">
+                    <span>Expenses</span>
+                    <strong>{{ expense_ratio }}%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill"
+                         style="width: {{ [expense_ratio, 100]|min }}%;">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="expense-progress">
+
+                <div class="progress-label">
+                    <span>Remaining Balance</span>
+                    <strong>{{ savings_rate }}%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="balance-fill"
+                         style="width: {{ [ [savings_rate, 0]|max, 100]|min }}%;">
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="panel-description">
+                Expense and savings percentages are based on recorded income.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="health-panel report-panel">
+
+        <div class="report-heading">
+
+            <div>
+                <p class="eyebrow">AI FINANCIAL INSIGHTS</p>
+                <h3>Your Financial Health Report</h3>
+            </div>
+
+            <span class="report-status">Analysis</span>
+
+        </div>
+
+        <div class="report-content">
+            {{ analysis }}
+        </div>
+
+    </div>
+
+    <div class="health-panel report-panel">
+
+        <h3>Category-wise Expenses</h3>
+
+        {% if categories %}
+
+            {% for category, amount in categories.items() %}
+
+                <div class="expense-progress">
+
+                    <div class="progress-label">
+                        <span>{{ category|title }}</span>
+                        <strong>₹{{ "%.2f"|format(amount) }}</strong>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="panel-description">
+                No expense records available yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <p class="health-disclaimer">
+        SAHIVEX provides informational financial analysis.
+        Recorded balance may differ from actual bank balance.
+    </p>
+
+</section>
+
+{% endblock %}

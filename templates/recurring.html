@@ -1,0 +1,220 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.recurring-container {
+    padding: 25px;
+    color: #ffffff;
+}
+
+.recurring-header {
+    margin-bottom: 25px;
+}
+
+.recurring-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.recurring-header p {
+    color: #a0aec0;
+}
+
+.recurring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.recurring-card {
+    background: #172033;
+    border: 1px solid #2d3a52;
+    padding: 22px;
+    border-radius: 14px;
+}
+
+.recurring-card h3 {
+    color: #a0aec0;
+    font-size: 15px;
+}
+
+.recurring-card h2 {
+    font-size: 27px;
+    margin-top: 10px;
+    color: #38bdf8;
+}
+
+.recurring-section {
+    background: #172033;
+    border: 1px solid #2d3a52;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.recurring-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.recurring-table th,
+.recurring-table td {
+    padding: 14px;
+    border-bottom: 1px solid #334155;
+    text-align: left;
+}
+
+.recurring-table th {
+    color: #38bdf8;
+}
+
+.recurring-table td {
+    color: #e2e8f0;
+}
+
+.recurring-empty {
+    color: #a0aec0;
+    padding: 15px 0;
+}
+
+.frequency {
+    background: #263b59;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+</style>
+
+<div class="recurring-container">
+
+    <div class="recurring-header">
+        <h1>🔁 SAHIVEX Recurring Expense Engine</h1>
+        <p>Identify repeated payments and estimate upcoming expenses.</p>
+    </div>
+
+    {% if report.success %}
+
+    <div class="recurring-grid">
+
+        <div class="recurring-card">
+            <h3>Detected Patterns</h3>
+            <h2>{{ report.total_recurring }}</h2>
+        </div>
+
+        <div class="recurring-card">
+            <h3>Monthly Recurring Amount</h3>
+            <h2>₹{{ "%.2f"|format(report.monthly_recurring) }}</h2>
+        </div>
+
+        <div class="recurring-card">
+            <h3>Weekly Recurring Amount</h3>
+            <h2>₹{{ "%.2f"|format(report.weekly_recurring) }}</h2>
+        </div>
+
+    </div>
+
+    <div class="recurring-section">
+
+        <h2>📊 Recurring Payment Analysis</h2>
+
+        {% if report.recurring_items %}
+
+        <table class="recurring-table">
+
+            <thead>
+                <tr>
+                    <th>Expense</th>
+                    <th>Category</th>
+                    <th>Frequency</th>
+                    <th>Average Amount</th>
+                    <th>Occurrences</th>
+                    <th>Next Expected Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in report.recurring_items %}
+
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>
+                        <span class="frequency">
+                            {{ item.frequency }}
+                        </span>
+                    </td>
+                    <td>₹{{ "%.2f"|format(item.average_amount) }}</td>
+                    <td>{{ item.occurrences }}</td>
+                    <td>{{ item.next_expected_date }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <p class="recurring-empty">
+            {{ report.message }}
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="recurring-section">
+
+        <h2>📅 Upcoming Expense Estimates</h2>
+
+        {% if report.upcoming_expenses %}
+
+            {% for item in report.upcoming_expenses %}
+
+            <div style="padding: 15px 0; border-bottom: 1px solid #334155;">
+
+                <h3>{{ item.title }}</h3>
+
+                <p>
+                    Expected: {{ item.next_expected_date }}
+                    | Amount: ₹{{ "%.2f"|format(item.average_amount) }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="recurring-empty">
+                No upcoming recurring payments estimated yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="recurring-section">
+        <h2>Expense Data Required</h2>
+        <p>{{ report.message }}</p>
+        <p>Add some expense transactions to start the analysis.</p>
+    </div>
+
+    {% endif %}
+
+    <p style="color:#94a3b8; font-size:13px;">
+        Note: These are estimates based on recorded transaction dates,
+        not confirmed future payments.
+    </p>
+
+</div>
+
+{% endblock %}

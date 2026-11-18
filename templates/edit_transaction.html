@@ -1,0 +1,123 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h1>Edit Transaction</h1>
+        <p>Update your SAHIVEX financial record</p>
+
+        <form method="POST">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label>Title</label>
+            <input type="text" name="title"
+                   value="{{ transaction.title }}" required>
+
+            <label>Amount (₹)</label>
+            <input type="number" name="amount"
+                   value="{{ transaction.amount }}"
+                   step="0.01" min="0.01" required>
+
+            <label>Category</label>
+            <input type="text" name="category"
+                   value="{{ transaction.category }}" required>
+
+            <label>Transaction Type</label>
+            <select name="transaction_type" required>
+                <option value="income"
+                    {% if transaction.transaction_type == 'income' %}selected{% endif %}>
+                    Income
+                </option>
+
+                <option value="expense"
+                    {% if transaction.transaction_type == 'expense' %}selected{% endif %}>
+                    Expense
+                </option>
+            </select>
+
+            <label>Date</label>
+            <input type="date" name="transaction_date"
+                   value="{{ transaction.date.strftime('%Y-%m-%d') if transaction.date else '' }}">
+
+            <label>Description</label>
+            <textarea name="description" rows="3">{{ transaction.description or '' }}</textarea>
+
+            <button type="submit">Update Transaction</button>
+
+            <a href="{{ url_for('transactions.transactions') }}"
+               class="cancel-btn">Cancel</a>
+
+        </form>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    min-height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 18px;
+    background: white;
+    color: #172033;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+}
+
+.auth-card h1,
+.auth-card > p {
+    text-align: center;
+}
+
+.auth-card > p {
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+.auth-card label {
+    display: block;
+    margin: 14px 0 7px;
+}
+
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d5dce5;
+    border-radius: 9px;
+    box-sizing: border-box;
+}
+
+.auth-card button,
+.cancel-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.cancel-btn {
+    background: #64748b;
+}
+</style>
+
+{% endblock %}

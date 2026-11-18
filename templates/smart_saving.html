@@ -1,0 +1,138 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.saving-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 20px;
+    color: #f8fafc;
+}
+
+.saving-header {
+    background: linear-gradient(135deg, #102a43, #14532d);
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+}
+
+.saving-header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.saving-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.saving-card {
+    background: #172033;
+    padding: 22px;
+    border-radius: 15px;
+    border: 1px solid #334155;
+}
+
+.saving-card h3 {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.saving-card h2 {
+    font-size: 25px;
+    margin-top: 10px;
+    color: #4ade80;
+}
+
+.recommendation-box {
+    background: #172033;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #334155;
+}
+
+.recommendation-item {
+    background: #202d42;
+    padding: 17px;
+    margin: 12px 0;
+    border-left: 4px solid #22c55e;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.saving-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #94a3b8;
+}
+
+@media(max-width:600px) {
+    .saving-header h1 {
+        font-size: 23px;
+    }
+}
+</style>
+
+<div class="saving-container">
+
+    <div class="saving-header">
+        <h1>💰 SAHIVEX Smart Saving</h1>
+        <p>Your intelligent personal saving recommendation system.</p>
+    </div>
+
+    <div class="saving-grid">
+
+        <div class="saving-card">
+            <h3>Total Income</h3>
+            <h2>₹{{ "%.2f"|format(report.total_income) }}</h2>
+        </div>
+
+        <div class="saving-card">
+            <h3>Total Expenses</h3>
+            <h2>₹{{ "%.2f"|format(report.total_expense) }}</h2>
+        </div>
+
+        <div class="saving-card">
+            <h3>Available Balance</h3>
+            <h2>₹{{ "%.2f"|format(report.balance) }}</h2>
+        </div>
+
+    </div>
+
+    <div class="recommendation-box">
+
+        <h2>🧠 Smart Recommendations</h2>
+
+        {% for recommendation in report.recommendations %}
+
+            <div class="recommendation-item">
+                {{ recommendation }}
+            </div>
+
+        {% else %}
+
+            <p>No recommendations available yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="saving-footer">
+        <p>SAHIVEX | Smart Financial Intelligence</p>
+        <p>Recommendations are based on your recorded financial data.</p>
+    </div>
+
+    <br>
+
+    <a href="{{ url_for('dashboard.dashboard') }}"
+       style="color:#4ade80; text-decoration:none;">
+       ← Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

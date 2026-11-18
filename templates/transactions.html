@@ -1,0 +1,297 @@
+
+{% extends "base.html" %}
+
+{% block title %}Transactions | SAHIVEX{% endblock %}
+
+{% block content %}
+
+<style>
+.transaction-page {
+    max-width: 1250px;
+    margin: auto;
+    color: #f8fafc;
+    padding: 20px;
+}
+
+.transaction-card {
+    background: #151d35;
+    border: 1px solid #293653;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 22px;
+}
+
+.transaction-page h2,
+.transaction-page h3 {
+    margin-top: 0;
+}
+
+.transaction-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.transaction-form label {
+    display: block;
+    margin-bottom: 7px;
+    color: #cbd5e1;
+}
+
+.transaction-form input,
+.transaction-form select,
+.transaction-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #354363;
+    background: #0d152b;
+    color: white;
+}
+
+.transaction-form textarea {
+    resize: vertical;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.transaction-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #536dfe;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+.transaction-table th,
+.transaction-table td {
+    padding: 14px;
+    border-bottom: 1px solid #293653;
+    text-align: left;
+}
+
+.transaction-table th {
+    color: #8da2ff;
+}
+
+.income {
+    color: #4ade80;
+    font-weight: bold;
+}
+
+.expense {
+    color: #fb7185;
+    font-weight: bold;
+}
+
+.action-link {
+    color: #93c5fd;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.delete-btn {
+    border: none;
+    color: #fca5a5;
+    background: transparent;
+    cursor: pointer;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+}
+
+@media(max-width: 650px) {
+    .transaction-form {
+        grid-template-columns: 1fr;
+    }
+
+    .transaction-page {
+        padding: 10px;
+    }
+}
+</style>
+
+<section class="transaction-page">
+
+    <h2>💳 SAHIVEX Transactions</h2>
+    <p style="color:#94a3b8;">
+        Manage your income and expenses securely.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="transaction-card">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="transaction-card">
+
+        <h3>➕ Add New Transaction</h3>
+
+        <form method="POST"
+              action="{{ url_for('transactions.add_transaction') }}"
+              class="transaction-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div>
+                <label>Transaction Title</label>
+                <input type="text" name="title"
+                       maxlength="150" required>
+            </div>
+
+            <div>
+                <label>Amount (₹)</label>
+                <input type="number" name="amount"
+                       min="0.01" step="0.01" required>
+            </div>
+
+            <div>
+                <label>Category</label>
+                <input type="text" name="category"
+                       maxlength="100" required>
+            </div>
+
+            <div>
+                <label>Transaction Type</label>
+                <select name="transaction_type" required>
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Date</label>
+                <input type="date" name="transaction_date">
+            </div>
+
+            <div>
+                <label>Description</label>
+                <input type="text" name="description"
+                       maxlength="500">
+            </div>
+
+            <div class="full-width">
+                <button class="transaction-btn" type="submit">
+                    Save Transaction
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="transaction-card">
+
+        <h3>📊 Transaction History</h3>
+
+        {% if transactions %}
+
+        <div class="table-wrapper">
+
+            <table class="transaction-table">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for transaction in transactions %}
+
+                    <tr>
+                        <td>
+                            {{ transaction.date.strftime('%d %b %Y') }}
+                        </td>
+
+                        <td>{{ transaction.title }}</td>
+
+                        <td>{{ transaction.category }}</td>
+
+                        <td>
+                            {% if transaction.transaction_type == 'income' %}
+                                <span class="income">Income</span>
+                            {% else %}
+                                <span class="expense">Expense</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(transaction.amount) }}
+                        </td>
+
+                        <td>
+
+                            <a class="action-link"
+                               href="{{ url_for('transactions.edit_transaction',
+                               transaction_id=transaction.id) }}">
+                                Edit
+                            </a>
+
+                            <form method="POST"
+                                  action="{{ url_for('transactions.delete_transaction',
+                                  transaction_id=transaction.id) }}"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('Delete this transaction?');">
+
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       value="{{ csrf_token() }}">
+
+                                <button class="delete-btn" type="submit">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <h3>No Transactions Yet</h3>
+                <p>Add your first income or expense above.</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

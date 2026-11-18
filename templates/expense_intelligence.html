@@ -1,0 +1,257 @@
+
+{% extends "base.html" %}
+
+{% block title %}SAHIVEX | Expense Intelligence{% endblock %}
+
+{% block content %}
+
+<style>
+.intelligence-container {
+    max-width: 1150px;
+    margin: 25px auto;
+    padding: 15px;
+    color: #f8fafc;
+}
+
+.intelligence-header {
+    background: linear-gradient(135deg, #102a43, #14532d);
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+}
+
+.intelligence-header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.intelligence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.intelligence-card {
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 15px;
+    padding: 22px;
+}
+
+.intelligence-card h3 {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.intelligence-card h2 {
+    font-size: 26px;
+    color: #4ade80;
+}
+
+.intelligence-section {
+    background: #172033;
+    border: 1px solid #334155;
+    padding: 24px;
+    border-radius: 15px;
+    margin-bottom: 22px;
+}
+
+.category-item {
+    background: #202d42;
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 10px;
+}
+
+.category-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.progress-track {
+    height: 9px;
+    background: #334155;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #22c55e;
+    border-radius: 20px;
+}
+
+.insight-item {
+    background: #202d42;
+    border-left: 4px solid #22c55e;
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+}
+
+.anomaly-item {
+    background: #422020;
+    border-left: 4px solid #ef4444;
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 8px;
+}
+
+.empty-message {
+    color: #94a3b8;
+    padding: 12px 0;
+}
+
+.back-link {
+    color: #4ade80;
+    text-decoration: none;
+}
+
+@media(max-width:600px) {
+    .intelligence-header h1 {
+        font-size: 23px;
+    }
+}
+</style>
+
+
+<div class="intelligence-container">
+
+    <!-- HEADER -->
+    <div class="intelligence-header">
+        <h1>🧠 SAHIVEX Expense Intelligence</h1>
+        <p>Understand your spending. Detect unusual expenses. Make smarter decisions.</p>
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="intelligence-grid">
+
+        <div class="intelligence-card">
+            <h3>Total Expenses</h3>
+            <h2>₹{{ "%.2f"|format(report.total_expense) }}</h2>
+        </div>
+
+        <div class="intelligence-card">
+            <h3>Transactions Analyzed</h3>
+            <h2>{{ report.transaction_count }}</h2>
+        </div>
+
+        <div class="intelligence-card">
+            <h3>Unusual Expenses</h3>
+            <h2>{{ report.anomalies|length }}</h2>
+        </div>
+
+    </div>
+
+
+    <!-- CATEGORY ANALYSIS -->
+    <div class="intelligence-section">
+
+        <h2>📊 Category Intelligence</h2>
+
+        {% for category in report.categories %}
+
+            <div class="category-item">
+
+                <div class="category-top">
+                    <strong>{{ category.name }}</strong>
+                    <strong>₹{{ "%.2f"|format(category.total) }}</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill"
+                         style="width: {{ category.percentage }}%">
+                    </div>
+                </div>
+
+                <p>
+                    {{ category.percentage }}% of total expenses
+                    | {{ category.count }} transactions
+                </p>
+
+                <small>
+                    Average: ₹{{ "%.2f"|format(category.average) }}
+                </small>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-message">No category data available.</p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- ANOMALY DETECTION -->
+    <div class="intelligence-section">
+
+        <h2>🚨 Expense Anomaly Detection</h2>
+
+        {% for anomaly in report.anomalies %}
+
+            <div class="anomaly-item">
+
+                <strong>{{ anomaly.title }}</strong>
+
+                <p>Amount: ₹{{ "%.2f"|format(anomaly.amount) }}</p>
+
+                <p>Category: {{ anomaly.category }}</p>
+
+                <p>Date: {{ anomaly.date }}</p>
+
+                <p>{{ anomaly.message }}</p>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-message">
+                No unusually high expenses detected by the current rule.
+            </p>
+
+        {% endfor %}
+
+        <small>
+            Statistical alerts are indicators for review, not proof of fraud.
+        </small>
+
+    </div>
+
+
+    <!-- SMART INSIGHTS -->
+    <div class="intelligence-section">
+
+        <h2>💡 Smart Expense Insights</h2>
+
+        {% for insight in report.insights %}
+
+            <div class="insight-item">
+                {{ insight }}
+            </div>
+
+        {% else %}
+
+            <p class="empty-message">
+                No insights available.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <a href="{{ url_for('dashboard.dashboard') }}"
+       class="back-link">
+        ← Back to Financial Dashboard
+    </a>
+
+</div>
+
+{% endblock %}
