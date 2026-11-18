@@ -36,6 +36,11 @@ app.config.from_object(Config)
 # Initialize CSRF Protection
 csrf = CSRFProtect()
 csrf.init_app(app)
+from flask_wtf.csrf import generate_csrf
+
+@app.context_processor
+def inject_csrf_token():
+    return dict(csrf_token=generate_csrf)
 
 # Initialize Database
 db.init_app(app)
