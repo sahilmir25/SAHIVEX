@@ -1,8 +1,9 @@
 import os
+from datetime import date
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Response, request
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 from config import Config
 from database import db
@@ -28,26 +29,44 @@ from routes.master_dashboard import master_bp
 from routes.auth import auth_bp
 
 
+# ==========================================
+# SAHIVEX APPLICATION
+# ==========================================
+
 app = Flask(__name__)
 
-# Load configuration
+# Load Configuration
 app.config.from_object(Config)
 
-# Initialize CSRF Protection
+
+# ==========================================
+# CSRF PROTECTION
+# ==========================================
+
 csrf = CSRFProtect()
 csrf.init_app(app)
-from flask_wtf.csrf import generate_csrf
+
 
 @app.context_processor
 def inject_csrf_token():
     return dict(csrf_token=generate_csrf)
 
-# Initialize Database
+
+# ==========================================
+# DATABASE INITIALIZATION
+# ==========================================
+
 db.init_app(app)
 
-# Initialize Login Manager
+
+# ==========================================
+# LOGIN MANAGER
+# ==========================================
+
 login_manager = LoginManager()
+
 login_manager.login_view = "auth.login"
+
 login_manager.init_app(app)
 
 
@@ -56,7 +75,10 @@ def load_user(user_id):
     return db.session.get(User, int(user_id))
 
 
-# Register Blueprints
+# ==========================================
+# REGISTER BLUEPRINTS
+# ==========================================
+
 app.register_blueprint(transactions_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(prediction_bp)
@@ -75,18 +97,94 @@ app.register_blueprint(master_bp)
 app.register_blueprint(auth_bp)
 
 
+# ==========================================
+# SEO CONFIGURATION
+# ==========================================
+
+def get_base_url():
+    return (
+        app.config.get("SEO_BASE_URL")
+        or request.url_root.rstrip("/")
+    )
+
+
+# ==========================================
+# HOME PAGE
+# ==========================================
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# Create database tables
+# ==========================================
+# SITEMAP.XML
+# ==========================================
+
+@app.route("/sitemap.xml")
+def sitemap():
+
+    base_url = get_base_url()
+
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>{base_url}/</loc>
+        <lastmod>{date.today().isoformat()}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+</urlset>
+"""
+
+    return Response(
+        xml_content,
+        mimetype="application/xml"
+    )
+
+
+# ==========================================
+# ROBOTS.TXT
+# ==========================================
+
+@app.route("/robots.txt")
+def robots():
+
+    base_url = get_base_url()
+
+    robots_content = f"""User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /transactions
+Disallow: /assistant
+
+Sitemap: {base_url}/sitemap.xml
+"""
+
+    return Response(
+        robots_content,
+        mimetype="text/plain"
+    )
+
+
+# ==========================================
+# DATABASE TABLE CREATION
+# ==========================================
+
 with app.app_context():
     db.create_all()
 
 
-# Run Application
+# ==========================================
+# RUN APPLICATION
+# ==========================================
+
 if __name__ == "__main__":
+
     port = int(os.environ.get("PORT", 5000))
 
     app.run(
