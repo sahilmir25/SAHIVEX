@@ -1,3 +1,4 @@
+
 import os
 from datetime import date
 
@@ -105,6 +106,19 @@ def get_base_url():
     return (
         app.config.get("SEO_BASE_URL")
         or request.url_root.rstrip("/")
+    )
+
+
+# ==========================================
+# GOOGLE SEARCH CONSOLE VERIFICATION
+# ==========================================
+
+@app.route("/google46c142889389b237.html")
+def google_site_verification():
+
+    return Response(
+        "google-site-verification: google46c142889389b237.html",
+        mimetype="text/html"
     )
 
 
